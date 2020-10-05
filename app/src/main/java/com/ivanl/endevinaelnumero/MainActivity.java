@@ -22,27 +22,34 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EditText text = findViewById(R.id.editTextNumberSigned);
                 String valueString = text.getText().toString();
+                // Program checks whether the EditText is empty or not
                 if (!valueString.matches("")) {
-                    // We return the number introduced by the user
+                    // The number introduced by the user is returned
                     int value = Integer.parseInt(text.getText().toString());
-                    // We generate a random number between 1 and 100 (both included)
-                    int randomNumber = (int) (Math.random() * 100 + 1);
-                    String result = Integer.toString(randomNumber);
-                    // We check the result and notify the user about it
-                    String notify;
-                    if (value == randomNumber) {
-                        wins++;
-                        notify = "¡Bien hecho!";
+                    // Program checks if the value is between the allowed rank
+                    if (!(value < 0 || value > 100)) {
+                        // We generate a random number between 1 and 100 (both included)
+                        int randomNumber = (int) (Math.random() * 100 + 1);
+                        String result = Integer.toString(randomNumber);
+                        // We check the result and notify the user about it
+                        String notify;
+                        if (value == randomNumber) {
+                            wins++;
+                            notify = "¡Bien hecho!";
+                        } else {
+                            loses++;
+                            notify = "Número no igual: " + result;
+                        }
+                        Toast toast = Toast.makeText(MainActivity.this, notify, Toast.LENGTH_SHORT);
+                        toast.show();
+                        // One try is added
+                        tries++;
+                        final TextView textView = findViewById(R.id.textView3);
+                        textView.setText(Integer.toString(tries));
                     } else {
-                        loses++;
-                        notify = "Número no igual: " + result;
+                        Toast toast = Toast.makeText(MainActivity.this, "El número debe estar entre 1 y 100", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
-                    Toast toast = Toast.makeText(MainActivity.this, notify, Toast.LENGTH_SHORT);
-                    toast.show();
-                    // One try is added
-                    tries++;
-                    final TextView textView = findViewById(R.id.textView3);
-                    textView.setText(Integer.toString(tries));
                     // We clear the EditText
                     text.getText().clear();
                 } else {
