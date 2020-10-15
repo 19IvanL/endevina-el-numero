@@ -1,6 +1,6 @@
 package com.ivanl.endevinaelnumero;
 
-public class Score {
+public class Score implements Comparable<Score> {
 
     private String username;
     private int tries, time;
@@ -37,6 +37,11 @@ public class Score {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    @Override
+    public int compareTo(Score o) {
+        return this.tries - o.tries;
     }
 
 }

@@ -13,12 +13,14 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    static int tries = 0, time = 0;
+    static int tries, time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tries = 0;
+        time = 0;
         // We generate a random number between 1 and 100 (both included)
         final int randomNumber = (int)(Math.random() * 100 + 1);
         // A timer is set and started
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                     int value = Integer.parseInt(text.getText().toString());
                     // Program checks if the value is between the allowed rank
                     if (!(value < 0 || value > 100)) {
-                        // The result is checked and the user is notified about it
+                        // The result is checked, and the user is notified about it
                         String notify = "";
                         if (value == randomNumber) {
                             chronometer.stop();

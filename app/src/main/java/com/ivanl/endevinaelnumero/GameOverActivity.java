@@ -31,6 +31,10 @@ public class GameOverActivity extends AppCompatActivity {
                 score.setTries(MainActivity.tries);
                 score.setTime(MainActivity.time);
                 RankingCollection.rankingList.add(score);
+                RankingCollection.print();
+                Intent intent = new Intent(view.getContext(), RankingActivity.class);
+                finish();
+                startActivity(intent);
             }
         });
         final Button cancelButton = findViewById(R.id.button3);
