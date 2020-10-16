@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 public class GameOverActivity extends AppCompatActivity {
 
+    // TODO Replace with Dialog
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

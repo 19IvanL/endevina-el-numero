@@ -41,7 +41,10 @@ public class Score implements Comparable<Score> {
 
     @Override
     public int compareTo(Score o) {
-        return this.tries - o.tries;
+        if (this.tries == o.tries)
+            return this.time - o.time;
+        else
+            return this.tries - o.tries;
     }
 
 }
