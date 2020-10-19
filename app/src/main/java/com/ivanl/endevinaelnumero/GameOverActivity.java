@@ -50,13 +50,11 @@ public class GameOverActivity extends AppCompatActivity {
     private void exitConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setMessage("¿Estás seguro de querer salir sin guardar tu puntuación?")
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
-
                 })
                 .setNegativeButton("No", null)
                 .show();

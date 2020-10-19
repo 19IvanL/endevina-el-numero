@@ -1,8 +1,14 @@
 package com.ivanl.endevinaelnumero;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -35,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         // When the button to check is pressed...
         final Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             public void onClick(View v) {
                 EditText text = findViewById(R.id.editTextNumberSigned);
                 String valueString = text.getText().toString();
@@ -51,9 +58,12 @@ public class MainActivity extends AppCompatActivity {
                         if (value == randomNumber) {
                             chronometer.stop();
                             toast.cancel();
-                            Intent intent = new Intent(v.getContext(), GameOverActivity.class);
-                            finish();
-                            startActivity(intent);
+                            AlertDialog dialog = gameOverDialogBuilder().create();
+                            dialog.show();
+                            // DEPRECATED Game over activity, in favor of a Dialog
+                            // Intent intent = new Intent(v.getContext(), GameOverActivity.class);
+                            // finish();
+                            // startActivity(intent);
                         } else {
                             if (randomNumber > value)
                                 toastString = "El número es más grande";
@@ -63,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         // One try is added
                         tries++;
                         final TextView textView = findViewById(R.id.textView3);
-                        textView.setText(Integer.toString(tries));
+                        textView.setText(String.valueOf(tries));
                     } else {
                         toastString = "El número debe estar entre 1 y 100";
                     }
@@ -77,4 +87,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private AlertDialog.Builder gameOverDialogBuilder() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Fin del juego");
+        builder.setMessage("Introduce tu nombre de usuario para guardar tu puntuación:");
+        builder.setView(R.layout.dialog_gameover);
+        builder.setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("Descartar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                exitConfirmationDialog();
+            }
+        });
+
+        return builder;
+    }
+
+    private void exitConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setMessage("¿Estás seguro de querer salir sin guardar tu puntuación?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
+
 }
