@@ -2,18 +2,12 @@ package com.ivanl.endevinaelnumero;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -62,12 +56,47 @@ public class MainActivity extends AppCompatActivity {
                         if (value == randomNumber) {
                             chronometer.stop();
                             toast.cancel();
-                            AlertDialog dialog = gameOverDialogBuilder().create();
+                            LayoutInflater inflater = getLayoutInflater();
+                            final View dialogLayout = inflater.inflate(R.layout.dialog_gameover, null);
+                            AlertDialog dialog = gameOverDialogBuilder(dialogLayout).create();
+                            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                                 @Override
+                                 public void onShow(final DialogInterface dialog) {
+                                     Button button1 = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                                     button1.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                             final EditText usernameText = dialogLayout.findViewById(R.id.editTextTextPersonName);
+                                             String valueString = usernameText.getText().toString();
+                                             if (!valueString.equalsIgnoreCase("")) {
+                                                 Score score = new Score();
+                                                 score.setUsername(usernameText.getText().toString());
+                                                 score.setTries(MainActivity.tries);
+                                                 score.setTime(MainActivity.time);
+                                                 RankingCollection.rankingList.add(score);
+                                                 RankingCollection.print();
+                                                 dialog.dismiss();
+                                                 Intent intent = new Intent(dialogLayout.getContext(), RankingActivity.class);
+                                                 finish();
+                                                 startActivity(intent);
+                                             } else {
+                                                 Toast dialogToast = Toast.makeText(MainActivity.this, "El campo está vacío", Toast.LENGTH_SHORT);
+                                                 dialogToast.show();
+                                             }
+
+                                         }
+                                     });
+                                     Button button2 = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                                     button2.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                             exitConfirmationDialog();
+
+                                         }
+                                     });
+                                 }
+                             });
                             dialog.show();
-                            // DEPRECATED Game over activity, in favor of a Dialog
-                            // Intent intent = new Intent(v.getContext(), GameOverActivity.class);
-                            // finish();
-                            // startActivity(intent);
                         } else {
                             if (randomNumber > value)
                                 toastString = "El número es más grande";
@@ -93,28 +122,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private AlertDialog.Builder gameOverDialogBuilder() {
+    private AlertDialog.Builder gameOverDialogBuilder(View dialogLayout) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setView(dialogLayout);
         builder.setTitle("Fin del juego");
         builder.setMessage("Introduce tu nombre de usuario para guardar tu puntuación:");
-        builder.setView(R.layout.dialog_gameover);
-        TextView tvTries = findViewById(R.id.tvTries);
-        tvTries.setText("Hola");
-        TextView tvTime = findViewById(R.id.tvTime);
-        tvTime.setText("Adios");
-        builder.setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                finish();
-            }
-        });
-        builder.setNegativeButton("Descartar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                exitConfirmationDialog();
-            }
-        });
-
+        TextView tvTries = dialogLayout.findViewById(R.id.tvTries);
+        tvTries.setText("Intentos: " + tries);
+        TextView tvTime = dialogLayout.findViewById(R.id.tvTime);
+        tvTime.setText("Tiempo: " + time + " s");
+        builder.setPositiveButton("Enviar", null);
+        builder.setNegativeButton("Descartar", null);
         return builder;
     }
 
@@ -132,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        dialog.dismiss();
+                        return;
                     }
                 })
                 .show();
