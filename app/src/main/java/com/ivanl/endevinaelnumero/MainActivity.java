@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         tvTime.setText("Tiempo: " + time + " s");
         builder.setPositiveButton("Enviar", null);
         builder.setNegativeButton("Descartar", null);
+        builder.setCancelable(false);
         return builder;
     }
 
